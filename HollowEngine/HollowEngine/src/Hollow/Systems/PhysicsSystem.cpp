@@ -66,6 +66,29 @@ namespace Hollow
 				static_cast<ShapeCircle*>(pCol->mpShape)->mCenter = pCol->mpTr->mPosition;
 				static_cast<ShapeCircle*>(pCol->mpShape)->mRadius = pCol->mpTr->mScale.x / 2.0f; // this will only be (x||y||z) as its a sphere!
 			}
+			else if (pCol->mpShape->mType == CONE)
+			{
+				
+				ShapeCone* tempLocalShape = static_cast<ShapeCone*>(pCol->mpLocalShape);
+				//Make sure to store the direction vector as well using the rotation matrix initialized earlier in transform maybe?
+				tempLocalShape->mRadius = pCol->mpTr->mScale.x / 2.0f;
+				tempLocalShape->mHeight = pCol->mpTr->mScale.y;
+				tempLocalShape->mCenter = pCol->mpBody->mPosition;
+				glm::vec3 extents = static_cast<ShapeCone*>(pCol->mpLocalShape)->GetHalfExtents();
+				tempLocalShape->mMin = glm::vec3(-extents.x, -extents.y, -extents.z) + pCol->mpBody->mPosition;
+				tempLocalShape->mMax = glm::vec3(extents.x, extents.y, extents.z) + pCol->mpBody->mPosition;
+
+				//Make sure to store the direction vector as well using the rotation matrix initialized earlier in transform maybe?
+				//static_cast<ShapeCone*>(pCol->mpShape)->mDirection = static_cast<ShapeCone*>(pCol->mpShape)->mDirection * pCol->mpBody->mRotationMatrix;
+
+				ShapeCone* tempShape = static_cast<ShapeCone*>(pCol->mpShape);
+				tempShape->mCenter = pCol->mpBody->mPosition;
+				tempShape->mRadius = pCol->mpTr->mScale.x / 2.0f;
+				tempShape->mHeight = pCol->mpTr->mScale.y;
+				tempShape->mMin = glm::vec3(-extents.x, -extents.y, -extents.z) + pCol->mpBody->mPosition;
+				tempShape->mMax = glm::vec3(extents.x, extents.y, extents.z) + pCol->mpBody->mPosition;
+
+			}
 			
 			// Collider added to Dynamic BVH
 			PhysicsManager::Instance().mTree.AddCollider(pCol);
@@ -124,11 +147,46 @@ namespace Hollow
 				{
 					static_cast<ShapeCircle*>(pCol->mpShape)->mCenter = pCol->mpBody->mPosition;
 				}
+				else if (pCol->mpShape->mType == CONE)
+				{
+					static_cast<ShapeCone*>(pCol->mpShape)->mCenter = pCol->mpBody->mPosition;
+					static_cast<ShapeCone*>(pCol->mpShape)->mDirection = static_cast<ShapeCone*>(pCol->mpLocalShape)->mDirection * pCol->mpBody->mRotationMatrix;
+					glm::vec3 extents = static_cast<ShapeCone*>(pCol->mpLocalShape)->GetHalfExtents();
+					glm::vec3 x = glm::vec3(extents.x, 0.0f, 0.0f);
+					glm::vec3 y = glm::vec3(0.0f, extents.y, 0.0f);
+					glm::vec3 z = glm::vec3(0.0f, 0.0f, extents.z);
+					glm::vec3 rotatedExtents = abs((pCol->mpBody->mRotationMatrix) * x) +
+						abs((pCol->mpBody->mRotationMatrix) * y) +
+						abs((pCol->mpBody->mRotationMatrix) * z);
+
+					// based on normalized body vertices
+					static_cast<ShapeCone*>(pCol->mpShape)->mMin = glm::vec3(-rotatedExtents.x, -rotatedExtents.y, -rotatedExtents.z) + pCol->mpBody->mPosition;
+					static_cast<ShapeCone*>(pCol->mpShape)->mMax = glm::vec3(rotatedExtents.x, rotatedExtents.y, rotatedExtents.z) + pCol->mpBody->mPosition;
+				}
 			}
 			else
 			{
-				static_cast<ShapeAABB*>(pCol->mpShape)->mMin = -static_cast<ShapeAABB*>(pCol->mpLocalShape)->GetHalfExtents() + pCol->mpTr->mPosition;
-				static_cast<ShapeAABB*>(pCol->mpShape)->mMax = static_cast<ShapeAABB*>(pCol->mpLocalShape)->GetHalfExtents() + pCol->mpTr->mPosition;
+				if (pCol->mpShape->mType == BOX)
+				{
+					static_cast<ShapeAABB*>(pCol->mpShape)->mMin = -static_cast<ShapeAABB*>(pCol->mpLocalShape)->GetHalfExtents() + pCol->mpTr->mPosition;
+					static_cast<ShapeAABB*>(pCol->mpShape)->mMax = static_cast<ShapeAABB*>(pCol->mpLocalShape)->GetHalfExtents() + pCol->mpTr->mPosition;
+				}
+				else if (pCol->mpShape->mType == CONE)
+				{
+					static_cast<ShapeCone*>(pCol->mpShape)->mCenter = pCol->mpBody->mPosition;
+					static_cast<ShapeCone*>(pCol->mpShape)->mDirection = static_cast<ShapeCone*>(pCol->mpLocalShape)->mDirection * pCol->mpBody->mRotationMatrix;
+					glm::vec3 extents = static_cast<ShapeCone*>(pCol->mpLocalShape)->GetHalfExtents();
+					glm::vec3 x = glm::vec3(extents.x, 0.0f, 0.0f);
+					glm::vec3 y = glm::vec3(0.0f, extents.y, 0.0f);
+					glm::vec3 z = glm::vec3(0.0f, 0.0f, extents.z);
+					glm::vec3 rotatedExtents = abs((pCol->mpBody->mRotationMatrix) * x) +
+						abs((pCol->mpBody->mRotationMatrix) * y) +
+						abs((pCol->mpBody->mRotationMatrix) * z);
+
+					// based on normalized body vertices
+					static_cast<ShapeCone*>(pCol->mpShape)->mMin = glm::vec3(-rotatedExtents.x, -rotatedExtents.y, -rotatedExtents.z) + pCol->mpBody->mPosition;
+					static_cast<ShapeCone*>(pCol->mpShape)->mMax = glm::vec3(rotatedExtents.x, rotatedExtents.y, rotatedExtents.z) + pCol->mpBody->mPosition;
+				}
 			}
 		}
 

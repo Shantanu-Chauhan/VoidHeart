@@ -35,6 +35,8 @@ namespace Hollow {
 		bool TestBallBoxIntersection(Collider* col1, Collider* col2);
 		bool TestBoxBallIntersection(Collider* col1, Collider* col2);
 		bool TestBallBallIntersection(Collider* col1, Collider* col2);
+		bool TestBoxConeIntersection(Collider* col1, Collider* col2);
+		bool TestConeBoxIntersection(Collider* col1, Collider* col2);
 		void ResetContacts();
 		void CopyContacts();
 		bool CheckCollsionAndGenerateContact(Collider* col1, Collider* col2);

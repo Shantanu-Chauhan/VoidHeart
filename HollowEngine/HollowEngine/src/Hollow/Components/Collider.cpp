@@ -59,6 +59,12 @@ namespace Hollow
 				mpLocalShape = new ShapeAABB(glm::vec3(0.0f), glm::vec3(0.0f));
 				mpShape->mpOwnerCollider = this;
 			}
+			if (mDShape == "CONE")
+			{
+				mpShape = new ShapeCone(0.0f, glm::vec3(0.0f), 0.0f, glm::vec3(0.0f,-1.0f,0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+				mpLocalShape = new ShapeCone(0.0f, glm::vec3(0.0f), 0.0f, glm::vec3(0.0f,-1.0f,0.0f), glm::vec3(0.0f), glm::vec3(0.0f));
+				mpShape->mpOwnerCollider = this;
+			}
 		}
 
 	}

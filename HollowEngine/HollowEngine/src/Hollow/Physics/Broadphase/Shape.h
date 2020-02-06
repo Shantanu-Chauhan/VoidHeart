@@ -10,6 +10,7 @@ namespace Hollow {
 	{
 		BALL,
 		BOX,
+		CONE,
 		SHAPESNUM
 	};
 
@@ -86,6 +87,40 @@ namespace Hollow {
 
 		float mRadius;
 		glm::vec3 mCenter;
+	};
+
+	class ShapeCone : public Shape
+	{
+	public:
+		ShapeCone(float radius, glm::vec3 center, float height, glm::vec3 direction, glm::vec3 min, glm::vec3 max) : Shape(ShapeType::CONE)
+		{
+			mRadius = radius;
+			mCenter = center;
+			mHeight = height;
+			mDirection = direction;
+			mMin = min;
+			mMax = max;
+		}
+
+		bool TestRay(const Ray& r, IntersectionData& id)
+		{
+			return true;
+		}
+		bool TestRay(const Ray& r, IntersectionData& id, glm::mat3& rot, glm::vec3& extents)
+		{
+			return true;
+		}
+
+		glm::vec3 GetHalfExtents() {
+			glm::vec3 extents;
+			extents = glm::vec3(mRadius, mHeight, mRadius);
+			return extents;
+		}
+		float mHeight;				// Height of the Cone
+		float mRadius;				//Radius of the Cone
+		glm::vec3 mCenter;			//Calculate the tip of the cone using center and direction
+		glm::vec3 mDirection; 		//Normalized axis Direction of the Cone
+		glm::vec3 mMin, mMax;		//Min and Max extents?
 	};
 
 	class ShapeAABB : public Shape
@@ -247,6 +282,12 @@ namespace Hollow {
 				this->mMin = (static_cast<ShapeCircle*>(shape)->mCenter - glm::vec3(static_cast<ShapeCircle*>(shape)->mRadius)) - fatMargin;
 				this->mMax = (static_cast<ShapeCircle*>(shape)->mCenter + glm::vec3(static_cast<ShapeCircle*>(shape)->mRadius)) + fatMargin;
 			}
+			else if (shape->mType == CONE)
+			{
+				ShapeCone* temp = static_cast<ShapeCone*>(shape);
+				this->mMin = temp->mMin - fatMargin;
+				this->mMax = temp->mMax + fatMargin;
+			}
 		}
 
 		bool Contains(Collider* col) {
@@ -270,6 +311,16 @@ namespace Hollow {
 					return false;
 				}
 				if (max.x > mMax.x || max.y > mMax.y || max.z > mMax.z) {
+					return false;
+				}
+			}
+			else if (col->mpShape->mType == CONE)
+			{
+				ShapeCone* other = static_cast<ShapeCone*>(col->mpShape);
+				if (other->mMin.x < mMin.x || other->mMin.y < mMin.y || other->mMin.z < mMin.z) {
+					return false;
+				}
+				if (other->mMax.x > mMax.x || other->mMax.y > mMax.y || other->mMax.z > mMax.z) {
 					return false;
 				}
 			}
@@ -352,5 +403,4 @@ namespace Hollow {
 		glm::mat4 mDebugMatrix;
 		MeshData mMeshData;
 	};
-
 }

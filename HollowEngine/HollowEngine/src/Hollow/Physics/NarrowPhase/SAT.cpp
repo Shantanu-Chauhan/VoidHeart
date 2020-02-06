@@ -19,6 +19,8 @@ namespace Hollow {
 		CollisionFunctions[ShapeType::BOX][ShapeType::BALL] = &SAT::TestBoxBallIntersection;
 		CollisionFunctions[ShapeType::BALL][ShapeType::BOX] = &SAT::TestBallBoxIntersection;
 		CollisionFunctions[ShapeType::BALL][ShapeType::BALL] = &SAT::TestBallBallIntersection;
+		CollisionFunctions[ShapeType::BOX][ShapeType::CONE] = &SAT::TestBoxConeIntersection;
+		CollisionFunctions[ShapeType::CONE][ShapeType::BOX] = &SAT::TestConeBoxIntersection;
 	}
 
 	SAT::~SAT()
@@ -521,6 +523,45 @@ namespace Hollow {
 		mContacts->push_back(manifold);
 		manifold->SetupGroundConstraint();
 		return true;
+	}
+	//Christer Ericson page 164  Testing a cone against a plane
+	bool SAT::TestBoxConeIntersection(Collider* box, Collider* cone)
+	{
+		ShapeAABB* boxShape = static_cast<ShapeAABB*>(box->mpShape);
+		ShapeCone* coneShape = static_cast<ShapeCone*>(cone->mpShape);
+		MeshData& md1 = boxShape->mMeshData;
+		glm::mat3& boxRotationMatrix = box->mpBody->mRotationMatrix;
+		glm::vec3 boxposition = box->mpBody->mPosition;
+
+		for (int i = 0; i < md1.faces.size(); ++i) {
+			glm::vec3 normal = md1.faces[i].normal;
+			glm::vec3 facePoint = (md1.GetPointOnFace(i)) + boxposition;
+			float d = glm::dot(-facePoint, normal);
+			float height = coneShape->mHeight;
+			glm::vec3 direction = coneShape->mDirection;
+			//if normal.pointonCone < d then intersection
+			//checking the tip of the cone
+			glm::vec3 tip = coneShape->mCenter - (direction * height);
+			if (glm::dot(tip, normal) < d)
+				return true;
+			//Testing with the far end of the cone
+			glm::vec3 m = glm::cross(normal, direction);
+			//Testing if the cone is parallel to the plane
+			if (m == glm::vec3(0.0f))
+				return false;
+			m = glm::cross(m, normal);
+
+			//q is the far end of the cone in the direction of the plane
+			glm::vec3 q = tip + height * coneShape->mDirection + coneShape->mRadius * m;
+			if (glm::dot(q, normal) < d)
+				return true;
+		}
+		return false;
+	}
+
+	bool SAT::TestConeBoxIntersection(Collider* col1, Collider* col2)
+	{
+		return TestBoxConeIntersection(col2, col1);
 	}
 
 	void SAT::ResetContacts()
