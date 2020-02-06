@@ -90,6 +90,8 @@ namespace Hollow
 
 			}
 			
+			PhysicsManager::Instance().UpdateScale(object);
+			
 			// Collider added to Dynamic BVH
 			PhysicsManager::Instance().mTree.AddCollider(pCol);
 		}

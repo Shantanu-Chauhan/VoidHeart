@@ -8,15 +8,20 @@
 #include "Hollow/Managers/RenderManager.h"
 #include "Hollow/Managers/ResourceManager.h"
 #include "Hollow/Managers/EventManager.h"
+#include "Hollow/Managers/ScriptingManager.h"
 
 #include "Components/Health.h"
+#include "Components/ParentOffset.h"
+
 #include "GameMetaData/GameObjectType.h"
 #include "GameMetaData/GameEventType.h"
 #include "Hollow/Core/GameMetaData.h"
 
 #include "DungeonGeneration/DungeonManager.h"
+#include "Systems/HandSystem.h"
 
 #include "Hollow/Components/Body.h"
+#include "Hollow/Components/UITransform.h"
 
 void Hollow::GameMetaData::Init()
 {
@@ -35,9 +40,11 @@ void Hollow::GameMetaData::Init()
 
 class GameLayer : public Hollow::Layer
 {
-	void OnUpdate()
+	void OnUpdate(float dt)
 	{
 		// Update Game managers here
+        
+
 	}
 };
 
@@ -51,13 +58,15 @@ public:
 		Application::Init("Resources/Settings.json");
 
 		Hollow::SceneManager::Instance().LoadLevel("Level3");
+		Hollow::ScriptingManager::Instance().RunScript("GameConfig");
 
 		PushLayer(new GameLayer());
 
+		BulletHell::DungeonManager::Instance().ConfigureDungeon();
         BulletHell::DungeonManager::Instance().Init();
-		//BulletHell::DungeonManager::Instance().Generate();
-		// Create temporary spell object
-		Hollow::ResourceManager::Instance().LoadPrefabAtPosition("FireballSpell", glm::vec3(125.0, 1.0, 65.0));
+		
+		Hollow::ScriptingManager::Instance().RunScript("SetupLevel");
+		Hollow::SystemManager::Instance().OnSceneInit();
 	}
 
 	~BulletHellGame()

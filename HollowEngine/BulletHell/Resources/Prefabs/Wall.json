@@ -24,6 +24,21 @@
             "Bounciness": 0.20000000298023225,
             "Shape": "BOX",
             "isTrigger": false
+        },
+        {
+            "Type": "Material",
+            "Diffuse": [
+                0.8,
+                0.8,
+                0.8
+            ],
+            "Specular": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "Shininess": 10.0,
+            "MaterialTextures": true
         }
     ]
 }

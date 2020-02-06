@@ -36,10 +36,12 @@ namespace BulletHell
 		void DebugDisplay();
 
 	public:
+        Hollow::GameObject* mpTarget;
 		std::string mScriptPath;
 		float mBaseAttackTime;
 		float mCurrentAttackTime;
 		bool mFireOnce;
 		bool mIsFired;
+		bool mShouldAttack;
 	};
 }
