@@ -113,7 +113,7 @@ namespace Hollow {
 
 		glm::vec3 GetHalfExtents() {
 			glm::vec3 extents;
-			extents = glm::vec3(mRadius, mHeight, mRadius);
+			extents = glm::vec3(mRadius, mHeight/2.0f, mRadius);
 			return extents;
 		}
 		float mHeight;				// Height of the Cone

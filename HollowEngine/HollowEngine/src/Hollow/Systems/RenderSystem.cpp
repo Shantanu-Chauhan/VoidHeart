@@ -63,7 +63,7 @@ void Hollow::RenderSystem::Update()
 		if (mGameObjects[i] == ImGuiManager::Instance().mpSelectedGameObject && pCollider)
 		{
 			DebugDrawManager::Instance().DebugAxes(trans->mPosition, trans->mScale);
-			if (pCollider->mpShape->mType == ShapeType::BOX)
+			if (pCollider->mpShape->mType == ShapeType::BOX || pCollider->mpShape->mType == ShapeType::CONE)
 			{
 				DebugDrawManager::Instance().DebugCube(trans->mPosition,
 					pCollider->mpShape->GetHalfExtents() * 2.0f);

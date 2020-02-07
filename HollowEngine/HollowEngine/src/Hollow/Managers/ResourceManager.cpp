@@ -732,7 +732,87 @@ namespace Hollow
 			mesh->mpEBO = ebo;
 			mShapes[WIRECUBE] = mesh;
 		}
+		//Cone
+		{
+			float radius = 0.5f;
+			float height = 1.0f;
+			std::vector<glm::vec3> vertices;
+			std::vector<unsigned int> ind;
+			int k = 0;
+			float coneAngle = (float)atan(radius / height);
 
+			float coneCos = (float)cos(coneAngle);
+			float coneSin = (float)sin(coneAngle);
+
+			int circleResolution = 1000;
+
+			for (int i = 0; i <= circleResolution; i++)
+			{
+				for (int j = 0; j <= circleResolution; j++)
+				{
+					float angle = 2 * ((float)3.14f) * (i / (float)circleResolution);
+
+					float cos = (float)std::cos(angle);
+					float sin = (float)std::sin(angle);
+
+					float x = radius * cos;
+					float z = radius * sin;
+
+					// Cone Bottom
+					vertices.push_back(glm::vec3(x, 0.0f, z));
+					ind.push_back(k++);
+					// Cone Bottom Normal
+					//vertices.push_back(glm::vec3(coneCos * cos, coneSin, coneCos* sin));
+				
+					// Cone Top
+					vertices.push_back(glm::vec3(0.0f, 1.0f,0.0f));
+					ind.push_back(k++);
+
+					// Cone Top Normal
+					//vertices.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+
+				}
+			}
+
+			// Center of Bottom Circle - Vertices
+			vertices.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+			ind.push_back(k++);
+			ind.push_back(k++);
+			ind.push_back(k++);
+			// Center of Bottom Circle - Normal
+			//vertices.push_back(glm::vec3(0.0f, -1.0f, 0.0f));
+
+			// CircleResolution - Bottom Circle - TRIANGLE_FAN
+			for (int j = 0; j <= circleResolution; j++)
+			{
+				float angle = (2 * (3.14f)) * (j / (float)circleResolution);
+
+				float x = (float)std::cos(angle);
+				float z = (float)std::sin(angle);
+
+				vertices.push_back(glm::vec3(0.5f* x, 0.0f, 0.5f* z));
+				ind.push_back(k++);
+
+				// Normal
+				//vertices.push_back(glm::vec3(0.0f, -1.0f, 0.0f ));
+			}
+			
+			
+			VertexBuffer* vbo = new VertexBuffer();
+			VertexArray* vao = new VertexArray();
+			ElementArrayBuffer* ebo = new ElementArrayBuffer();
+			ebo->AddData(&ind[0], ind.size(), sizeof(unsigned int));
+			vao->AddBuffer(*vbo);
+			vbo->AddData(&vertices[0], vertices.size(), sizeof(glm::vec3));
+			vao->Push(3, GL_FLOAT, sizeof(float));
+			vao->AddLayout();
+			vao->Unbind();
+			Mesh* mesh = new Mesh();
+			mesh->mpVAO = vao;
+			mesh->mpVBO = vbo;
+			mesh->mpEBO = ebo;
+			mShapes[CONES] = mesh;
+		}
 		//Circle
 		{
 			std::vector<glm::vec3> verts;

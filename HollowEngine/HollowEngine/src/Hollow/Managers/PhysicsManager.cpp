@@ -178,11 +178,47 @@ namespace Hollow {
 			// update local shape (0.5f because we are updating half extents)
 			static_cast<ShapeAABB*>(pCol->mpLocalShape)->mMin = -0.5f * (pCol->mpTr->mScale);
 			static_cast<ShapeAABB*>(pCol->mpLocalShape)->mMax = 0.5f * (pCol->mpTr->mScale);
+
+			glm::vec3 extents = static_cast<ShapeAABB*>(pCol->mpLocalShape)->GetHalfExtents();
+			glm::vec3 x = glm::vec3(extents.x, 0.0f, 0.0f);
+			glm::vec3 y = glm::vec3(0.0f, extents.y, 0.0f);
+			glm::vec3 z = glm::vec3(0.0f, 0.0f, extents.z);
+			glm::vec3 rotatedExtents = abs((pCol->mpBody->mRotationMatrix) * x) +
+				abs((pCol->mpBody->mRotationMatrix) * y) +
+				abs((pCol->mpBody->mRotationMatrix) * z);
+
+			// based on normalized body vertices
+			static_cast<ShapeAABB*>(pCol->mpShape)->mMin = glm::vec3(-rotatedExtents.x, -rotatedExtents.y, -rotatedExtents.z) + pCol->mpBody->mPosition;
+			static_cast<ShapeAABB*>(pCol->mpShape)->mMax = glm::vec3(rotatedExtents.x, rotatedExtents.y, rotatedExtents.z) + pCol->mpBody->mPosition;
 		}
 		else if (pCol->mpShape->mType == ShapeType::BALL)
 		{
 			static_cast<ShapeCircle*>(pCol->mpShape)->mCenter = pCol->mpTr->mPosition;
 			static_cast<ShapeCircle*>(pCol->mpShape)->mRadius = pCol->mpTr->mScale.x / 2.0f; // this will only be (x||y||z) as its a sphere!
+		}
+		
+		else if (pCol->mpShape->mType == CONE)
+		{
+
+			ShapeCone* tempLocalShape = static_cast<ShapeCone*>(pCol->mpLocalShape);
+			//Make sure to store the direction vector as well using the rotation matrix initialized earlier in transform maybe?
+			tempLocalShape->mRadius = pCol->mpTr->mScale.x / 2.0f;
+			tempLocalShape->mHeight = pCol->mpTr->mScale.y;
+			tempLocalShape->mCenter = pCol->mpTr->mPosition;
+			glm::vec3 extents = static_cast<ShapeCone*>(pCol->mpLocalShape)->GetHalfExtents();
+			tempLocalShape->mMin = glm::vec3(-extents.x, -extents.y, -extents.z) + pCol->mpTr->mPosition;
+			tempLocalShape->mMax = glm::vec3(extents.x, extents.y, extents.z) + pCol->mpTr->mPosition;
+
+			//Make sure to store the direction vector as well using the rotation matrix initialized earlier in transform maybe?
+			//static_cast<ShapeCone*>(pCol->mpShape)->mDirection = static_cast<ShapeCone*>(pCol->mpShape)->mDirection * pCol->mpBody->mRotationMatrix;
+
+			ShapeCone* tempShape = static_cast<ShapeCone*>(pCol->mpShape);
+			tempShape->mCenter = pCol->mpTr->mPosition;
+			tempShape->mRadius = pCol->mpTr->mScale.x / 2.0f;
+			tempShape->mHeight = pCol->mpTr->mScale.y;
+			tempShape->mMin = glm::vec3(-extents.x, -extents.y, -extents.z) + pCol->mpTr->mPosition;
+			tempShape->mMax = glm::vec3(extents.x, extents.y, extents.z) + pCol->mpTr->mPosition;
+
 		}
 	}
 }

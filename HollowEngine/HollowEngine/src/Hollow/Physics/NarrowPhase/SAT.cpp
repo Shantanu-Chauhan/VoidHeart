@@ -534,27 +534,30 @@ namespace Hollow {
 		glm::vec3 boxposition = box->mpBody->mPosition;
 
 		for (int i = 0; i < md1.faces.size(); ++i) {
-			glm::vec3 normal = md1.faces[i].normal;
-			glm::vec3 facePoint = (md1.GetPointOnFace(i)) + boxposition;
+			glm::vec3 normal = md1.faces[i].normal* boxRotationMatrix;
+			glm::vec3 facePoint = boxRotationMatrix * (md1.GetPointOnFace(i) * box->mpTr->mScale) + boxposition;
 			float d = glm::dot(-facePoint, normal);
 			float height = coneShape->mHeight;
 			glm::vec3 direction = coneShape->mDirection;
 			//if normal.pointonCone < d then intersection
 			//checking the tip of the cone
-			glm::vec3 tip = coneShape->mCenter - (direction * height);
-			if (glm::dot(tip, normal) < d)
-				return true;
+			glm::vec3 tip = coneShape->mCenter - (direction * height/2.0f);
+			//if (glm::dot(tip, normal) < d)
+				//continue;
 			//Testing with the far end of the cone
 			glm::vec3 m = glm::cross(normal, direction);
 			//Testing if the cone is parallel to the plane
-			if (m == glm::vec3(0.0f))
-				return false;
+			//if (m == glm::vec3(0.0f))
+				//continue;
 			m = glm::cross(m, normal);
 
 			//q is the far end of the cone in the direction of the plane
 			glm::vec3 q = tip + height * coneShape->mDirection + coneShape->mRadius * m;
 			if (glm::dot(q, normal) < d)
+			{
+				HW_CORE_INFO("COLLIDED");
 				return true;
+			}
 		}
 		return false;
 	}

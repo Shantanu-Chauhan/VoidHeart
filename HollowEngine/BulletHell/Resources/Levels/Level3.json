@@ -66,6 +66,39 @@
           "MD": 0.5
         }
       ]
+    },
+    {
+      "Type": "ENEMY",
+      "Components": [
+        {
+          "Type": "Transform",
+          "Position": [ 112, 1.5, 176 ],
+          "Scale": [ 1.0, 2.0, 1.0 ],
+          "Rotation": [0.0,0.0,0.0]
+        },
+        {
+          "Type": "Body",
+          "Mass": 0.00001,
+          "RigidbodyType": "STATIC",
+          "UseGravity": false
+        },
+        {
+          "Type": "Collider",
+          "Shape": "CONE"
+        },
+        {
+          "Type": "Model",
+          "Shape": "CONES",
+          "CastShadow": true
+        },
+        {
+          "Type": "Material",
+          "Specular": [ 1.0, 1.0, 1.0 ],
+          "Diffuse": [ 3.0, 0.0, 0.0 ],
+          "Shininess": 10.0,
+          "Texture": "Resources/Textures/cracks.png"
+        }
+      ]
     }
   ]
 }

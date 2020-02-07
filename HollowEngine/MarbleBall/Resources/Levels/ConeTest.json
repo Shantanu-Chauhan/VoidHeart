@@ -1,0 +1,155 @@
+{
+  "Audio": {
+    "Volumes": {
+      "Master": 0.0,
+      "Music": 0.0,
+      "SFX": 0.8999999761581421
+    },
+    "Background": "Resources/Audio/Songs/music.mp3"
+  },
+  "GameObjects": [
+    {
+      "Type": "",
+      "Active": true,
+      "Components": [
+        {
+          "Type": "Transform",
+          "Position": [ 0.0, 2.0, 5.0 ],
+          "Scale": [ 1.0, 1.0, 1.0 ]
+        },
+        {
+          "Type": "Camera",
+          "Yaw": -895.1436157226563,
+          "Pitch": -45.80000305175781,
+          "PitchLowerBound": -25.0,
+          "MovementSpeed": 5.0,
+          "MouseSensitivity": 1.600000023841858,
+          "Zoom": 45.0,
+          "Near": 0.10000000149011612,
+          "Far": 1000.0,
+          "IsActive": true,
+          "CameraType": 3,
+          "ProjectionType": 0,
+          "ViewPortPosition": [ 0, 0 ],
+          "ViewPortSize": [ 1280, 720 ],
+          "PositionOffset": [ 0.0, 1.0, 3.0 ],
+          "AnchorFocusOffset": [ 0.0, 1.0, 0.0 ]
+        }
+      ]
+    },
+    {
+      "Type": "ROCK",
+      "Components": [
+        {
+          "Type": "Transform",
+          "Position": [ 0, 1.5, 0 ],
+          "Scale": [ 1.0, 1.0, 2.0 ],
+          "Rotation": [ 0.0, 0.0, 0.0 ]
+        },
+        {
+          "Type": "Body",
+          "Mass": 0.00001,
+          "RigidbodyType": "STATIC",
+          "UseGravity": false
+        },
+        {
+          "Type": "Collider",
+          "Shape": "CONE"
+        },
+        {
+          "Type": "Model",
+          "Shape": "CONES",
+          "ModelHasOffset": true,
+          "CastShadow": true
+        },
+        {
+          "Type": "Material",
+          "Specular": [ 1.0, 1.0, 1.0 ],
+          "Diffuse": [ 3.0, 0.0, 0.0 ],
+          "Shininess": 10.0,
+          "Texture": "Resources/Textures/cracks.png"
+        }
+      ]
+    },
+    {
+      "Type": "PLAYER",
+      "Active": true,
+      "Components": [
+        {
+          "Type": "Transform",
+          "Position": [ 0.0, 1.0, 0.0 ],
+          "Rotation": [ 0.0, 90.0, 0.0 ],
+          "Scale": [ 0.5, 0.5, 0.5 ]
+        },
+        {
+          "Type": "Model",
+          "Shape": "SPHERE",
+          "CastShadow": true,
+          "ModelHasOffset": false
+        },
+        {
+          "Type": "Material",
+          "Texture": "Resources/Textures/cracks.png",
+          "Specular": [ 9.999999974752428e-7, 9.999899930335233e-7, 9.999899930335233e-7 ],
+          "MaterialTextures": true
+        },
+        {
+          "Type": "Script",
+          "FilePath": "Resources/Scripts/test.lua"
+        },
+        {
+          "Type": "Score",
+          "ScoreIncrement": 10
+        },
+        {
+          "Type": "UITransform",
+          "Position": [ 70.0, 600.0 ],
+          "Scale": [ 2.0, 2.0 ]
+        },
+        {
+          "Type": "UIText",
+          "Tag": "SCORE",
+          "ChangingText": true,
+          "TextScale": [ 1.0, 1.0 ],
+          "Color": [ 0.034081459045410159, 0.0, 1.0 ]
+        }
+      ]
+    },
+    {
+      "Type": "PLATFORM",
+      "Active": true,
+      "Components": [
+        {
+          "Type": "Transform",
+          "Scale": [ 2.0, 1.0, 10.0 ]
+        },
+        {
+          "Type": "Material",
+          "Diffuse": [ 1.0, 0.0, 0.0 ],
+          "Specular": [ 1.0, 0.0, 0.0 ],
+          "Shininess": 1000.0,
+          "MaterialTextures": true
+        },
+        {
+          "Type": "Model",
+          "Shape": "CUBE",
+          "CastShadow": true,
+          "ModelHasOffset": false
+        },
+        {
+          "Type": "Body",
+          "RigidbodyType": "STATIC",
+          "IsFrictionLess": false,
+          "UseGravity": false
+        },
+        {
+          "Type": "Collider",
+          "Friction": 1.0,
+          "Bounciness": 0.20000000298023225,
+          "Shape": "CUBE",
+          "isTrigger": false
+        }
+      ]
+    }
+  ]
+}
