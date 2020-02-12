@@ -31,7 +31,7 @@
     {
       "Type": "Spell",
       "Name": "Fireball",
-      "Script": "Resources/Scripts/Spells/Fire.lua",
+      "Script": "Spells/Fire",
       "SpellType": 1,
       "UIRotation": 1.570796,
       "ParticleSize": 0.0,

@@ -22,6 +22,7 @@
 
 #include "Hollow/Components/Body.h"
 #include "Hollow/Components/UITransform.h"
+#include "GameLogic/GameLogicManager.h"
 
 void Hollow::GameMetaData::Init()
 {
@@ -43,8 +44,7 @@ class GameLayer : public Hollow::Layer
 	void OnUpdate(float dt)
 	{
 		// Update Game managers here
-        
-
+		Hollow::ScriptingManager::Instance().RunScript("GameLogic");
 	}
 };
 
@@ -64,8 +64,12 @@ public:
 
 		BulletHell::DungeonManager::Instance().ConfigureDungeon();
         BulletHell::DungeonManager::Instance().Init();
-		
+
+		BulletHell::GameLogicManager::Instance().Init();
+
 		Hollow::ScriptingManager::Instance().RunScript("SetupLevel");
+
+        BulletHell::DungeonManager::Instance().mpPlayerGo = Hollow::ScriptingManager::Instance().lua["player"];
 		Hollow::SystemManager::Instance().OnSceneInit();
 	}
 

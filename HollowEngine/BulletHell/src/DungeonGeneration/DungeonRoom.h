@@ -30,11 +30,17 @@ namespace BulletHell
         DungeonRoom& operator=(const DungeonRoom& room);
         glm::ivec2 GetCoords() const;
 		int GetFloorNum() const { return mFloorNum; }
+		int GetDoorBits() const { return mDoors; }
+        int GetEnemyCount() const { return mEnemies.size(); }
     private:
         int TotalDoors() const;
     public:
         void ConstructRoom();
+		bool IsCleared();
+		void UnlockRoom();
+		void LockDownRoom();
 
+		// structure
         static float mWallLength;
         static float mWallHeight;
         static float mRoomSize;
@@ -42,10 +48,13 @@ namespace BulletHell
         static float mDoorWidth;
         static float mDoorHeight;
         static float mDoorThickness;
-        int mEnemyCount;
-        std::vector<Hollow::GameObject*> mDoorGOs;
-    private:    	
+
+		// game
+        bool mIsUnlocked;
+        Hollow::GameObject* mDoorGOs[9]; // doors at 1,2,4,8 indices
+        std::vector<Hollow::GameObject*> mEnemies;
         DungeonRoomType mRoomType;
+    private:    	
         int mRoomID;   // unique id of the room
         int mDoors;    // flag field for 4 doors
         int mFloorNum; // floor number of the room (owner id)

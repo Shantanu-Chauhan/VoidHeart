@@ -20,18 +20,21 @@ namespace Hollow
 		for (unsigned int i = 0; i < mGameObjects.size(); ++i)
 		{
 			Script* scriptComp = mGameObjects[i]->GetComponent<Script>();
-			
-			lua["gameObject"] = scriptComp->mpOwner;
 
-			for (auto script : scriptComp->mScripts)
+			if (scriptComp->mIsActive)
 			{
-				try {
-					lua.script_file(ScriptingManager::Instance().rootPath + script + ScriptingManager::Instance().ext);
-				}
-				catch (const sol::error & e)
+				lua["gameObject"] = scriptComp->mpOwner;
+
+				for (auto script : scriptComp->mScripts)
 				{
-					const char* errorName = e.what();
-					HW_TRACE(errorName);
+					try {
+						lua.script_file(ScriptingManager::Instance().rootPath + script + ScriptingManager::Instance().ext);
+					}
+					catch (const sol::error & e)
+					{
+						const char* errorName = e.what();
+						HW_TRACE(errorName);
+					}
 				}
 			}
 		}
@@ -40,5 +43,17 @@ namespace Hollow
 	void ScriptingSystem::AddGameObject(GameObject* pGameObject)
 	{
 		CheckAllComponents<Script>(pGameObject);
+	}
+
+	void ScriptingSystem::OnDeleteGameObject(GameObject* pGameObject)
+	{
+		// Run any delete scripts
+		auto& lua = ScriptingManager::Instance().lua;
+		Script* pScript = pGameObject->GetComponent<Script>();
+		lua["gameObject"] = pScript->mpOwner;
+		for (auto& script : pScript->mDestroyScripts)
+		{
+			lua.script_file(ScriptingManager::Instance().rootPath + script + ScriptingManager::Instance().ext);
+		}
 	}
 }

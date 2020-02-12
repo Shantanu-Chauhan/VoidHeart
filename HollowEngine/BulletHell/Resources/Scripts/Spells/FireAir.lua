@@ -13,7 +13,9 @@ function CreateFireball(xVel, zVel)
 	zVelocity = zVelocity / totalVelocity
 		
 	local attackSpeed = 5.0
-	body.velocity = attackSpeed * vec3.new(xVelocity, 0.0, zVelocity)
+	local playerVelocity = gameObject:GetBody().velocity
+	body.velocity = playerVelocity + attackSpeed * vec3.new(xVelocity, 0.0, zVelocity)
+	-- Add player velocity
 
 	transform = go:GetTransform()
 	transform.position = body.position
@@ -27,14 +29,14 @@ function PlayerAttack ()
 	for i=1,3 do
 		CreateFireball(i, i)
 	end
-	PlaySFX("Resources/Audio/SFX/PlayerAttack.wav")
+	--PlaySFX("Resources/Audio/SFX/PlayerAttack.wav")
 end
 
 function CheckValidAttack()
-	attack = gameObject:GetAttack()
+	local attack = gameObject:GetAttack()
 	if attack.shouldAttack then
 		PlayerAttack()
-		attack.shouldAttack = false;
+		attack.shouldAttack = false
 	end
 end
 

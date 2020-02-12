@@ -1,0 +1,50 @@
+{
+    "Type": "ENEMY",
+    "Tag": "Boss",
+  "Components": [
+    {
+      "Type": "Transform",
+      "Position": [ 10.0, 10.0, 10.0 ],
+      "Scale": [ 4.0, 4.0, 4.0 ]
+    },
+    {
+      "Type": "Body",
+      "Mass": 10000.0,
+      "isFrictionLess": true,
+      "RigidbodyType": "DYNAMIC"
+    },
+    {
+      "Type": "Collider",
+      "Shape": "BOX"
+    },
+    {
+      "Type": "Model",
+      "Model": "Resources/Models/Walking.fbx",
+      "ModelHasOffset": true,
+      "CastShadow": true
+    },
+    {
+      "Type": "Material",
+      "Shininess": 1.0,
+      "MaterialData": "Resources/Models/Walking.fbx"
+    },
+    {
+      "Type": "Script",
+      "Scripts": [
+        "EnemyFollowsPlayer"
+      ]
+    },
+    {
+      "Type": "Attack",
+      "Script": "ShootInCardinalDirections",
+      "BaseAttackTime": 0.4
+    },
+    {
+      "Type": "Health",
+      "HitPoints": 100,
+      "IsAlive": true,
+      "Invincible": false,
+      "InvincibleTime": 3.0
+    }
+  ]
+}

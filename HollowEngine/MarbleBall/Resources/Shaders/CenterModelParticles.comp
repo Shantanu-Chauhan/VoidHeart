@@ -33,6 +33,8 @@ uniform float DeltaTime;
 uniform vec2 SpeedRange;
 uniform vec2 ScaleRange;
 uniform vec2 LifeRange;
+uniform vec3 Direction;
+uniform vec3 Center;
 uniform bool Pause;
 uniform bool Active;
 
@@ -68,7 +70,7 @@ void main()
 			each_particle[gid].life = rand(pos.yx) * (LifeRange.y - LifeRange.x) + LifeRange.x;
 			each_particle[gid].currentlife = each_particle[gid].life;
 			each_particle[gid].speed = rand(pos.zx) * (SpeedRange.y - SpeedRange.x) + SpeedRange.x;
-			each_particle[gid].direction = vec3(1.0,0.0,0.0);
+			each_particle[gid].direction = normalize(pos - Center);
 		}
 		else
 		{

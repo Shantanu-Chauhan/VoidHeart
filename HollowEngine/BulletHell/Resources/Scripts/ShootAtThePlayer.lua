@@ -1,11 +1,21 @@
 function Shoot()
+    -----------------------------------------
+    -- playtesting vars
+	local bulletSpeed = 15.0
+    -----------------------------------------
+	    
     local transform = gameObject:GetTransform()
 	local spawnPos = transform.position
 
+    --  acquire target 
     local target = player
+    if (target == nil or target.isActive == false) then
+        return
+    end
     local targetTransform = target:GetTransform()
     local targetPos = targetTransform.position
     
+    -- calculate direction
     local xDir = targetPos.x - spawnPos.x
 	local zDir = targetPos.z - spawnPos.z
 	local dirLength = math.sqrt(xDir*xDir + zDir*zDir)
@@ -14,10 +24,10 @@ function Shoot()
 	
     -- look at the target
     local rot = vec3.new(0.0, 0.0, 0.0)
-    local tangent = xDir / zDir
+    local tangent = xDirNorm / zDirNorm
     local radians = math.atan(tangent)
     local degree = radians * 180 / math.pi
-    if xDirNorm >= 0 then  
+    if zDirNorm >= 0 then  
 	    rot = vec3.new(0.0, degree, 0.0)
         transform:Rotate(rot)
     end
@@ -25,14 +35,28 @@ function Shoot()
 	    rot = vec3.new(0.0, degree + 180, 0.0)
         transform:Rotate(rot)
     end
-
     
-	local gameObjectPath = "Resources/Json data/Bullet.json"
-	--local go = CreateGameObject(gameObjectPath)
-	--body.velocity = attackSpeed * vec3.new(xVelocityNorm, 0.0, zVelocityNorm)
+	local attack = gameObject:GetAttack()
+	if attack.currentAttackTime > attack.baseAttackTime then
+        -- Create bullet
+	    local bulletPrefabPath = "Resources/Json data/Bullet.json"
+	    local bullet = CreateGameObject(bulletPrefabPath)
+        local bulletTransform = bullet:GetTransform()
+	    local bulletBody = bullet:GetBody()
+   
+        -- Setting position
+        bulletBody.position = spawnPos
+        bulletTransform.position = spawnPos
 
-	local attackSpeed = 10.0
+        -- Setting velocity
+        bulletBody.velocity = bulletSpeed * vec3.new(xDirNorm, 0.0, zDirNorm)
     
+        -- Setting rotation
+        bulletTransform:Rotate(rot);
+
+        attack.currentAttackTime = 0
+    end
+
 end
 
 function Update()
